@@ -1,5 +1,5 @@
 import { format } from "date-fns"
-import { Moon, Sun } from "lucide-react"
+import { Copy,Moon, Sun } from "lucide-react"
 import { useState } from "react"
 import { useSearchParams } from 'react-router-dom'
 
@@ -44,6 +44,10 @@ function App() {
           <Button variant="outline" onClick={() => setTheme("dark")}>
             <Moon />
             Tema Escuro
+          </Button>
+          <Button variant='link' className="cursor-pointer" onClick={() => {navigator.clipboard.writeText(window.location.href)}}>
+            <Copy />
+            Compartilhar
           </Button>
         </div>
 
