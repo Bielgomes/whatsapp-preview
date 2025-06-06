@@ -1,6 +1,7 @@
 import { format } from "date-fns"
 import { Moon, Sun } from "lucide-react"
 import { useState } from "react"
+import { useSearchParams } from 'react-router-dom'
 
 import { useTheme } from "@/components/theme-provider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -12,13 +13,24 @@ function App() {
   const maxMessageLength = 101
   const maxNameLength = 40
 
-  const [avatar, setAvatar] = useState<string>("")
-  const [name, setName] = useState<string>("Strange user")
-  const [text, setText] = useState<string>("Lorem ipsum Dolor Sit Amet")
-  const [hour, setHour] = useState<string>(format(new Date(), 'HH:MM'))
-  const [messageCount, setMessageCount] = useState<number>(1)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const [avatar, setAvatar] = useState<string>(searchParams.get('avatar') || "")
+  const [name, setName] = useState<string>(searchParams.get('name') || "Strange user")
+  const [message, setMessage] = useState<string>(searchParams.get('message') || "Lorem ipsum Dolor Sit Amet")
+  const [hour, setHour] = useState<string>(searchParams.get('hour') || format(new Date(), 'HH:MM'))
+  const [messageCount, setMessageCount] = useState<number>(Number(searchParams.get('messageCount')) || 1)
+
+  if (messageCount > 99) setMessageCount(99)
+  if (messageCount < 1) setMessageCount(1)
 
   const { setTheme } = useTheme()
+
+  const updateQueryParams = (key: string, value: string) => {
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set(key, value)
+    setSearchParams(newParams)
+  }
 
   return (
     <main className="bg-background">
@@ -36,44 +48,91 @@ function App() {
 
         <div className="gap-1 flex flex-col">
           <Label htmlFor="avatar">Foto de Perfil</Label>
-          <Input id="avatar" type="url" placeholder="Url da Foto de Perfil" value={avatar} onChange={event => setAvatar(event.target.value)} />
+          <Input
+            id="avatar"
+            type="url"
+            placeholder="Url da Foto de Perfil"
+            value={avatar}
+            onChange={event => {
+              updateQueryParams('avatar', event.target.value)
+              setAvatar(event.target.value)
+            }}
+          />
         </div>
 
         <div className="gap-1 flex flex-col">
           <Label htmlFor="name">Nome de Usuário</Label>
-          <Input id="name" type="text" placeholder="Nome" value={name} onChange={event => setName(event.target.value)} />
+          <Input
+            id="name"
+            type="text"
+            placeholder="Nome"
+            value={name}
+            onChange={event => {
+              updateQueryParams('name', event.target.value)
+              setName(event.target.value)
+            }}
+          />
         </div>
 
         <div className="gap-1 flex flex-col">
           <Label htmlFor="message">Mensagem</Label>
-          <Input id="message" type="text" placeholder="Mensagem" value={text} onChange={event => setText(event.target.value)} />
+          <Input
+            id="message"
+            type="text"
+            placeholder="Mensagem"
+            value={message}
+            onChange={event => {
+              updateQueryParams('message', event.target.value)
+              setMessage(event.target.value)
+            }}
+          />
         </div>
 
         <div className="gap-1 flex flex-col">
           <Label htmlFor="hour">Hora</Label>
-          <Input id="hour" type="text" placeholder="Hora (00:00)" value={hour} onChange={event => setHour(event.target.value)} />
+          <Input
+            id="hour"
+            type="text"
+            placeholder="Hora (00:00)"
+            value={hour}
+            onChange={event => {
+              updateQueryParams('hour', event.target.value)
+              setHour(event.target.value)
+            }}
+          />
         </div>
 
         <div className="gap-1 flex flex-col">
           <Label htmlFor="messageCount">Quantidade de Mensagens</Label>
-          <Input id="messageCount" type="number" placeholder="Número de Mensagens" min={1} max={99} value={messageCount} onChange={event => setMessageCount(Number(event.target.value))} />
+          <Input
+            id="messageCount"
+            type="number"
+            placeholder="Número de Mensagens"
+            min={1}
+            max={99}
+            value={messageCount}
+            onChange={event => {
+              updateQueryParams('messageCount', event.target.value)
+              setMessageCount(Number(event.target.value))
+            }}
+          />
         </div>
       </div>
 
       <div className="flex p-6 border-2 rounded-xl border-dashed border-amber-400 w-min">
-        <Avatar className="w-20 h-20">
+        <Avatar className="w-18 h-18">
           <AvatarImage src={avatar} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
         <div className="ml-4 max-w-md w-md relative">
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-1">
             <strong className="font-black">{name.slice(0, maxNameLength) + (name.length > maxNameLength ? "..." : "" )}</strong>
             <span className="text-green-700 dark:text-green-500">{hour}</span>
           </div>
 
           <div className="flex relative">
-            <p className="leading-5 text-zinc-600 pr-12 dark:text-[#959595]">{text.slice(0, maxMessageLength) + (text.length > maxMessageLength ? "..." : "" )}</p>
+            <p className="leading-5 text-zinc-600 pr-12 dark:text-[#959595]">{message.slice(0, maxMessageLength) + (message.length > maxMessageLength ? "..." : "" )}</p>
 
             <div className="rounded-full w-5 h-5 bg-green-700 dark:bg-green-500 absolute right-0 top-0">
               <span className="text-sm absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white dark:text-black">{messageCount}</span>
