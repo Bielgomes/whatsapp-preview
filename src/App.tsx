@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+import { Separator } from "./components/ui/separator"
+
 function App() {
-  const maxMessageLength = 101
   const maxNameLength = 40
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -132,13 +133,14 @@ function App() {
           </div>
 
           <div className="flex relative">
-            <p className="leading-5 text-zinc-600 pr-12 dark:text-[#959595]">{message.slice(0, maxMessageLength) + (message.length > maxMessageLength ? "..." : "" )}</p>
-
+            <p className="leading-5 text-zinc-600 pr-12 dark:text-[#959595] line-clamp-2">{message}</p>
+            
             <div className="rounded-full w-5 h-5 bg-green-700 dark:bg-green-500 absolute right-0 top-0">
               <span className="text-sm absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white dark:text-black">{messageCount}</span>
             </div>
           </div>
 
+          <Separator className="absolute -bottom-3" />
         </div>
       </div>
     </main>
