@@ -11,9 +11,10 @@ import { Label } from "@/components/ui/label"
 
 import { Separator } from "./components/ui/separator"
 
-function App() {
-  const maxNameLength = 40
+const MAX_NAME_LENGTH = 40
 
+function App() {
+  const { setTheme } = useTheme()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [avatar, setAvatar] = useState<string>(searchParams.get('avatar') || "")
@@ -25,8 +26,6 @@ function App() {
   if (messageCount > 99) setMessageCount(99)
   if (messageCount < 1) setMessageCount(1)
 
-  const { setTheme } = useTheme()
-
   const updateQueryParams = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams)
     newParams.set(key, value)
@@ -34,8 +33,8 @@ function App() {
   }
 
   return (
-    <main className="bg-background">
-      <div className="flex flex-col mb-8 w-2xl p-4 rounded-lg border-dashed border-2 gap-2">
+    <main className="bg-background flex items-center flex-col justify-center h-screen gap-8">
+      <div className="flex flex-col w-2xl p-4 rounded-lg border-dashed border-2 gap-2">
         <div className="gap-2 flex mb-2">
           <Button onClick={() => setTheme("light")}>
             <Sun />
@@ -56,7 +55,7 @@ function App() {
           <Input
             id="avatar"
             type="url"
-            placeholder="Url da Foto de Perfil"
+            placeholder="URL da foto de Perfil"
             value={avatar}
             onChange={event => {
               updateQueryParams('avatar', event.target.value)
@@ -124,7 +123,7 @@ function App() {
         </div>
       </div>
 
-      <div className="flex p-6 border-2 rounded-xl border-dashed border-amber-400 w-min">
+      <div className="flex p-6 border-2 rounded-xl border-dashed border-amber-400 w-2xl justify-center">
         <Avatar className="w-18 h-18">
           <AvatarImage src={avatar} />
           <AvatarFallback>CN</AvatarFallback>
@@ -132,7 +131,7 @@ function App() {
 
         <div className="ml-4 max-w-md w-md relative">
           <div className="flex justify-between mb-1">
-            <strong className="font-black">{name.slice(0, maxNameLength) + (name.length > maxNameLength ? "..." : "" )}</strong>
+            <strong className="font-black">{name.slice(0, MAX_NAME_LENGTH) + (name.length > MAX_NAME_LENGTH ? "..." : "" )}</strong>
             <span className="text-green-700 dark:text-green-500">{hour}</span>
           </div>
 
